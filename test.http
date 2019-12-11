@@ -1,0 +1,34 @@
+
+@url=http://localhost:3000/api
+
+
+@json = Content-Type: application/json
+### 注册
+post {{url}}/register
+{{json}}
+
+{
+    "username":"yh1404",
+    "password":"abcd"
+}
+
+### 获取登录页
+GET {{url}}/login
+
+
+### 登录
+POST {{url}}/login HTTP/1.1
+{{json}}
+
+{
+    "username":"yh1404",
+    "password":"abcd"
+}
+
+### 获取个人信息
+GET {{url}}/profile
+Authorization: eyJhbGciOiJIUzI1NiJ9.NWRlZjM2N2Y1M2Q5YjQzN2Q0OWU2ZDVl.kuDr0Q24x1GrKLRFtkwCGzQhDJaSi-kjt6crZnbEDw0
+
+
+
+
