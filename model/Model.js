@@ -15,4 +15,4 @@ const UserSchema = mongoose.Schema({
 
 const User = mongoose.model('User',UserSchema,'users')
 
-module.exports =  { User,bcrypt } 
+module.exports =  { User, bcrypt } 

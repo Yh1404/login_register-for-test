@@ -9,6 +9,7 @@ const express = require('express')
 const app = express()
 
 const SECRET = 'gfiuqwhboi9bfnq2rffq' //token密钥
+
 app.use(express.json())  //使用中间件拦截请求
 
 app.post('/api/register',async (req,res) =>{ //注册接口
@@ -24,22 +25,20 @@ app.post('/api/register',async (req,res) =>{ //注册接口
         console.log(error)
     }
 })
-app.get('/api/login',async (req,res)=>{
+
+app.get('/api/login',async (req,res)=>{ //获取登录页接口
     try {
         res.status(200)
-        
         res.sendFile(__dirname + '/view/登录页.html')
     } catch (error) {
-        
     }
-
 })
 app.post('/api/login',async (req,res) =>{ //登录接口
     try {
         const user = await User.findOne({
             username:req.body.username
         })
-        
+        console.log(user)
         if(user) {
             const isVaildPassword = bcrypt.compareSync(req.body.password,user.password)
             if(isVaildPassword) {
