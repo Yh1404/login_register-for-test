@@ -14,12 +14,12 @@ app.use(express.json())  //使用中间件拦截请求
 
 app.post('/api/register',async (req,res) =>{ //注册接口
     try {
-        const user = await User.create({    //创建User实例
+        const user = await User.create({    //创建UserModel实例，此处必须进行await，否则user接收不到创建的实例
             username:req.body.username,
             password:req.body.password
         })
-        user.save()
-        res.send(user)
+        user.save()      //save（）方法将User写入数据库
+        res.send(user)   //返回user对象
         console.log('写入成功')
     } catch (error) {
         console.log(error)
@@ -35,12 +35,12 @@ app.get('/api/login',async (req,res)=>{ //获取登录页接口
 })
 app.post('/api/login',async (req,res) =>{ //登录接口
     try {
-        const user = await User.findOne({
+        const user = await User.findOne({  //根据用户名查找到对应的用户
             username:req.body.username
         })
         console.log(user)
-        if(user) {
-            const isVaildPassword = bcrypt.compareSync(req.body.password,user.password)
+        if(user) {   //用户存在，验证密码
+            const isVaildPassword = bcrypt.compareSync(req.body.password,user.password) //使用compare方法和数据库中的散列值比对
             if(isVaildPassword) {
                 console.log('登录成功！')
                 const token = jwt.sign(String(user._id),SECRET)     //用密钥和id生成token
