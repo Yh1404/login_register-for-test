@@ -14,10 +14,10 @@ const UserSchema = mongoose.Schema({
     }
   }
 });
-const FileSchema = mongoose.Schema({
-  filename: String,
-  size: Number
-});
+// const FileSchema = mongoose.Schema({
+//   filename: String,
+//   size: Number
+// });
 
 const User = mongoose.model("User", UserSchema, "users"); //利用Schema映射创建model
 
