@@ -1,171 +1,163 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Login</title>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+  </head>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      text-decoration: none;
+    }
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Login</title>
-        <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-    </head>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            text-decoration: none;
+    body {
+      height: 100vh;
+      background-image: linear-gradient(120deg, #3498db, #8e44ad);
+
+      /* 居中 */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* 登录模块 */
+    .loginbox {
+      width: 360px;
+      height: 580px;
+      box-sizing: border-box;
+      padding: 80px 40px;
+      border-radius: 16px;
+      position: absolute;
+      /* 字体 */
+      text-align: center;
+
+      /* 背景 */
+      background-color: #fff;
+
+      transition: 1s;
+    }
+
+    /* 表单 */
+    .text {
+      position: relative;
+      margin-top: 60px;
+      border-bottom: 2px solid #ccc;
+    }
+
+    /* 表单中的输入框 */
+    .text input {
+      outline: none;
+      border: none;
+      font-size: 15px;
+      width: 100%;
+      padding: 0 5px;
+      height: 40px;
+      margin-top: 1px;
+    }
+
+    /* 占位符Username、Password */
+    .text span::before {
+      content: attr(data-placeholder);
+      font-size: 20px;
+      color: #ccc;
+      position: absolute;
+      pointer-events: none;
+      left: 5px;
+      top: 100%;
+      transform: translateY(-120%);
+      transition: 0.5s;
+    }
+
+    /* 彩色输入线 */
+    .text span::after {
+      content: "";
+      position: absolute;
+      width: 0%;
+      height: 2px;
+      left: 0%;
+      background-image: linear-gradient(120deg, #3498db, #8e44ad);
+      transition: 0.5s;
+    }
+
+    .focus + span::before {
+      top: 10px;
+    }
+
+    .focus + span::after {
+      width: 100%;
+    }
+
+    .lgbtn {
+      width: 100%;
+      height: 50px;
+      margin-top: 30px;
+      border: none;
+      outline: none;
+      background-image: linear-gradient(120deg, #3498db, #8e44ad, #3498db);
+      background-size: 200%;
+      color: #fff;
+      font-size: 16px;
+      transition: 0.5s;
+      cursor: pointer;
+    }
+
+    /* 点击按钮时背景变换 */
+    .lgbtn:hover {
+      background-position: right;
+    }
+
+    .bottom-text {
+      margin-top: 30px;
+      font-size: 13px;
+      letter-spacing: 1px;
+    }
+
+    a {
+      color: #3498db;
+    }
+  </style>
+
+  <body>
+    <div class="loginbox">
+      <h1>Login</h1>
+      <div class="text">
+        <input type="text" id="username" />
+        <span data-placeholder="Username"></span>
+      </div>
+      <div class="text">
+        <input type="password" id="password" />
+        <span data-placeholder="Password"></span>
+      </div>
+      <input type="button" value="Log in" class="lgbtn" />
+      <div class="bottom-text">Don't have account? <a href="">Sign up</a></div>
+    </div>
+  </body>
+  <script>
+    $(".text input").on("focus", function() {
+      $(this).addClass("focus");
+    });
+    $(".text input").on("blur", function() {
+      if ($(this).val() == "") $(this).removeClass("focus");
+    });
+    $(".lgbtn").click(function() {
+      const username = $("#username").val();
+      const password = $("#password").val();
+      $.ajax({
+        url: "http://localhost:3000/api/login",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({
+          username,
+          password
+        }),
+        success: function(res) {
+          window.location.href = "http://localhost:3000/api/upload";
         }
-
-        body {
-            height: 100vh;
-            background-image: linear-gradient(120deg, #3498db, #8e44ad);
-
-            /* 居中 */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* 登录模块 */
-        .loginbox {
-            width: 360px;
-            height: 580px;
-            box-sizing: border-box;
-            padding: 80px 40px;
-            border-radius: 16px;
-            position: absolute;
-            /* 字体 */
-            text-align: center;
-
-            /* 背景 */
-            background-color: #fff;
-            
-            transition: 1s;
-        }
-
-        /* 表单 */
-        .text {
-            position: relative;
-            margin-top: 60px;
-            border-bottom: 2px solid #ccc;
-        }
-
-        /* 表单中的输入框 */
-        .text input {
-            outline: none;
-            border: none;
-            font-size: 15px;
-            width: 100%;
-            padding: 0 5px;
-            height: 40px;
-            margin-top: 1px;
-        }
-
-        /* 占位符Username、Password */
-        .text span::before {
-            content: attr(data-placeholder);
-            font-size: 20px;
-            color: #ccc;
-            position: absolute;
-            pointer-events: none;
-            left: 5px;
-            top: 100%;
-            transform: translateY(-120%);
-            transition: .5s;
-        }
-
-        /* 彩色输入线 */
-        .text span::after {
-            content: '';
-            position: absolute;
-            width: 0%;
-            height: 2px;
-            left: 0%;
-            background-image: linear-gradient(120deg, #3498db, #8e44ad);
-            transition: .5s;
-        }
-
-        .focus+span::before {
-            top: 10px;
-        }
-
-        .focus+span::after {
-            width: 100%;
-        }
-
-        .lgbtn {
-            width: 100%;
-            height: 50px;
-            margin-top: 30px;
-            border: none;
-            outline: none;
-            background-image: linear-gradient(120deg, #3498db, #8e44ad, #3498db);
-            background-size: 200%;
-            color: #fff;
-            font-size: 16px;
-            transition: .5s;
-            cursor: pointer;
-        }
-
-        /* 点击按钮时背景变换 */
-        .lgbtn:hover {
-            background-position: right;
-        }
-
-        .bottom-text {
-            margin-top: 30px;
-            font-size: 13px;
-            letter-spacing: 1px;
-        }
-
-        a {
-            color: #3498db;
-        }
-  
-    </style>
-
-    <body>
-        <div class="loginbox">
-            <h1>Login</h1>
-            <div class="text">
-                <input type="text" id="username">
-                <span data-placeholder="Username"></span>
-            </div>
-            <div class="text">
-                <input type="password" id="password">
-                <span data-placeholder="Password"></span>
-            </div>
-            <input type="button" value="Log in" class="lgbtn">
-            <div class="bottom-text">
-                Don't have account? <a href="">Sign up</a>
-            </div>
-        </div>
-    </body>
-    <script>
-        $(".text input").on("focus", function () {
-            $(this).addClass('focus')
-        })
-        $(".text input").on("blur", function () {
-            if ($(this).val() == '')
-                $(this).removeClass('focus')
-        })
-        $(".lgbtn").click(function(){
-            
-            const username = $("#username").val()
-            const password = $("#password").val()
-            console.log({username,password})
-            $.ajax({
-                url:'http://localhost:3000/api/login',
-                type:'POST',
-                contentType:"application/json",
-                data:JSON.stringify({
-                    username,
-                    password
-                }),
-                success:function(res){
-                    alert('登录成功')
-                }
-            })
-        })
-    </script>
-
+      });
+    });
+  </script>
 </html>
