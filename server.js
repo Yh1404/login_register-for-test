@@ -1,4 +1,4 @@
-const { User, bcrypt } = require("./model/Model");
+const { User, bcrypt, File } = require("./model/Model");
 
 //const bcrypt = require('bcryptjs') //对密码进行散列加密和验证
 
@@ -12,23 +12,22 @@ const SECRET = "gfiuqwhboi9bfnq2rffq"; //token密钥
 
 const cookieParser = require("cookie-parser");
 
-const grid = require("gridfs-stream");
-
-const fs = require("fs");
 const multer = require("multer");
-const upload = multer();
+const upload = multer({ dest: "uploads/" });
 
 app.use(express.json()); //使用中间件拦截请求
 app.use(cookieParser());
 
-app.all("*", function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
-  res.header("X-Powered-By", " 3.2.1");
-  res.header("Content-Type", "text/html;charset=utf-8");
-  next();
-});
+app.use("/uploads", express.static(__dirname + "/uploads"));
+
+// app.all("*", function(req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Headers", "X-Requested-With");
+//   res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
+//   res.header("X-Powered-By", " 3.2.1");
+//   res.header("Content-Type", "text/html;charset=utf-8");
+//   next();
+// });
 
 app.post("/api/register", async (req, res) => {
   //注册接口
@@ -67,7 +66,7 @@ app.post("/api/login", async (req, res) => {
       if (isVaildPassword) {
         const token = jwt.sign(String(user._id), SECRET); //用密钥和id生成token
         res.cookie("token", String(token), {
-          maxAge: 90000,
+          maxAge: 90000000,
           httpOnly: true
         });
 
@@ -98,17 +97,30 @@ app.get("/api/upload", (req, res) => {
   } catch (error) {}
 });
 
-app.post("/api/upload", upload.any(), (req, res) => {
+app.post("/api/upload", upload.single("file"), async (req, res) => {
   const raw = req.cookies.token;
   const id = jwt.verify(raw, SECRET);
   const user = User.findById(id);
   if (user) {
-    console.log("用户验证通过...");
-    console.log(req.files);
+    req.file.path = "http://localhost:3000/uploads/" + req.file.filename;
+    console.log(req.file);
+    console.log("用户验证通过...上传成功");
+    const filename = req.file.originalname;
+    const path = req.file.path;
+    const size = req.file.size;
+    const file = await File.create({
+      filename,
+      size,
+      path
+    });
+    file.save();
+    res.end();
   }
-  res.end();
 });
 
+app.get("/api/download", async (req, res) => {
+  res.download("uploads/29b35e6136101e9168028e1c07312d6e", "zs.jpg");
+});
 app.listen(3000, async (req, res) => {
   console.log("http://localhost:3000");
 });

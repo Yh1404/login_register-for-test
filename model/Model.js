@@ -14,11 +14,18 @@ const UserSchema = mongoose.Schema({
     }
   }
 });
-// const FileSchema = mongoose.Schema({
-//   filename: String,
-//   size: Number
-// });
+const FileSchema = mongoose.Schema({
+  filename: {
+    type: String,
+    unique: true
+  },
+  size: Number,
+  path: {
+    type: String,
+    unique: true
+  }
+});
 
 const User = mongoose.model("User", UserSchema, "users"); //利用Schema映射创建model
-
-module.exports = { User, bcrypt };
+const File = mongoose.model("File", FileSchema, "documents");
+module.exports = { User, bcrypt, File };
